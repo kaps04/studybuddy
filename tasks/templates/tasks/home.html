@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>StudyBuddy</title>
+</head>
+
+<body>
+
+    <h1>📚 StudyBuddy</h1>
+
+    <h2>Your Tasks</h2>
+
+    {% for task in tasks %}
+        <p>
+            {{ task.title }}
+        </p>
+    {% endfor %}
+
+</body>
+</html>
