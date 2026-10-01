@@ -21,4 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", views.home),
     path("add/", views.add_task),
+    path("complete/<int:task_id>/", views.complete_task),
+    path("delete/<int:task_id>/", views.delete_task),
 ]
