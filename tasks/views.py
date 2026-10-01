@@ -26,3 +26,16 @@ def delete_task(request, task_id):
     task.delete()
 
     return redirect("/")
+
+def edit_task(request, task_id):
+    task = Task.objects.get(id=task_id)
+
+    if request.method == "POST":
+        task.title = request.POST["title"]
+        task.priority = request.POST["priority"]
+
+        task.save()
+
+        return redirect("/")
+
+    return render(request, "tasks/edit_task.html", {"task": task})

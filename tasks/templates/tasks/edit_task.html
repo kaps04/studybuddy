@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Task - StudyBuddy</title>
+</head>
+
+<body>
+
+    <h1>✏️ Edit Task</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label>Task name:</label>
+        <input type="text" name="title" value="{{ task.title }}">
+
+        <br><br>
+
+        <label>Priority:</label>
+
+        <select name="priority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+        </select>
+
+        <br><br>
+
+        <button type="submit">Save Changes</button>
+
+    </form>
+
+    <br>
+
+    <a href="/">← Back to Home</a>
+
+</body>
+</html>
