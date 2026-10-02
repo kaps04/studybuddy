@@ -2,19 +2,30 @@ from django.shortcuts import render ,redirect
 from django.http import HttpResponse
 from .models import Task
 
+from .forms import TaskForm
+
 def home(request):
       tasks = Task.objects.all()
       return render(request, "tasks/home.html", {"tasks": tasks})
 
+
+
 def add_task(request):
+    form = TaskForm()
+
     if request.method == "POST":
-        title = request.POST["title"]
-        priority = request.POST["priority"]
-        Task.objects.create(title=title,
-         priority=priority)
+        form = TaskForm(request.POST)
 
-    return render(request, "tasks/add_task.html")
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            priority = form.cleaned_data["priority"]
 
+            Task.objects.create(
+                title=title,
+                priority=priority
+            )
+
+    return render(request, "tasks/add_task.html", {"form": form})
 def complete_task(request, task_id):
     task = Task.objects.get(id=task_id)
     task.completed = True
