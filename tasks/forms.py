@@ -1,13 +1,10 @@
 from django import forms
+from .models import Task
 
 
-class TaskForm(forms.Form):
-    title = forms.CharField()
+class TaskForm(forms.ModelForm):
 
-    priority = forms.ChoiceField(
-        choices=[
-            ("Low", "Low"),
-            ("Medium", "Medium"),
-            ("High", "High"),
-        ]
-    )
+   
+     class Meta:
+        model = Task
+        fields = ["title", "priority"]

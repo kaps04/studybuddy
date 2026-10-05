@@ -17,14 +17,8 @@ def add_task(request):
         form = TaskForm(request.POST)
 
         if form.is_valid():
-            title = form.cleaned_data["title"]
-            priority = form.cleaned_data["priority"]
-
-            Task.objects.create(
-                title=title,
-                priority=priority
-            )
-
+            form.save()
+            return redirect("/")
     return render(request, "tasks/add_task.html", {"form": form})
 def complete_task(request, task_id):
     task = Task.objects.get(id=task_id)
