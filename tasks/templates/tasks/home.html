@@ -1,40 +1,131 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudyBuddy</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tasks/style.css' %}">
 </head>
 
 <body>
+    <nav>
+        <h2>📚 StudyBuddy</h2>
 
-    <h1>📚 StudyBuddy</h1>
+        <p>Welcome, {{ request.user.username }}!</p>
+
+        <a href="{% url 'home' %}">Home</a> |
+        <a href="{% url 'add_task' %}">Add Task</a>
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Log Out</button>
+        </form>
+    </nav>
+
     
-    <h2>Your Tasks</h2>
-    <p>
-     
-    {% for task in tasks %}
-     ID: {{ task.id }} | {{ task.title }} | Priority: {{ task.priority }}      
-         {% if task.completed %}
-            ✅ Completed
-        {% else %}
-            <a href="/complete/{{ task.id }}/">
-                Complete
-            </a>
-        {% endif %}
-     <a href="/edit/{{ task.id }}/">
-            ✏️ Edit
+      
+
+<main class="dashboard">
+    <header class="welcome">
+        <div>
+            <p class="eyebrow">YOUR PERSONAL STUDY SPACE</p>
+            <h1>Let's get things done.</h1>
+            <p>Small steps today, big progress tomorrow.</p>
+        </div>
+
+        <a class="button" href="{% url 'add_task' %}">
+            + New task
         </a>
+    </header>
 
-        <a href="/delete/{{ task.id }}/">
-            🗑️ Delete
-        </a>
-        </p>
-    {% endfor %}
-    
-<h2>My Task Summary</h2>
+    <section class="stats">
+        <div class="card stat-card">
+            <span class="stat-label">All tasks</span>
+            <p class="stat-number">{{ total_tasks }}</p>
+            <span class="stat-note">Your workload</span>
+        </div>
 
-<p>Completed tasks: {{ completed_count }}</p>
-<p>Pending tasks: {{ pending_count }}</p>
+        <div class="card stat-card">
+            <span class="stat-label">Completed</span>
+            <p class="stat-number">{{ completed_tasks }}</p>
+            <span class="stat-note">Great progress</span>
+        </div>
 
+        <div class="card stat-card">
+            <span class="stat-label">Pending</span>
+            <p class="stat-number">{{ pending_tasks }}</p>
+            <span class="stat-note">Still to do</span>
+        </div>
 
-</body>
-</html>
+        <div class="card stat-card">
+            <span class="stat-label">Completion</span>
+            <p class="stat-number">{{ completion_rate }}%</p>
+            <div class="progress-track">
+                <div class="progress-fill"
+                     style="width: {{ completion_rate }}%;"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tasks-section">
+        <div class="section-heading">
+            <div>
+                <h2>Your tasks</h2>
+                <p>One thing at a time. You've got this.</p>
+            </div>
+            <span class="task-count">{{ total_tasks }} total</span>
+        </div>
+
+        {% for task in tasks %}
+            <article class="card task-card">
+                <div class="task-main">
+                    <div class="task-marker {% if task.completed %}is-complete{% endif %}">
+                        {% if task.completed %}✓{% else %}•{% endif %}
+                    </div>
+
+                    <div class="task-info">
+                        <h3 class="{% if task.completed %}completed-title{% endif %}">
+                            {{ task.title }}
+                        </h3>
+
+                        {% if task.description %}
+                            <p>{{ task.description }}</p>
+                        {% endif %}
+
+                        <div class="task-meta">
+                            <span class="priority priority-{{ task.priority|lower }}">
+                                {{ task.priority }} priority
+                            </span>
+
+                            {% if task.due_date %}
+                                <span>Due {{ task.due_date }}</span>
+                            {% endif %}
+
+                            <span>
+                                {% if task.completed %}Completed{% else %}In progress{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-actions">
+                    {% if not task.completed %}
+                        <a href="{% url 'complete_task' task.id %}">Complete</a>
+                    {% endif %}
+                    <a href="{% url 'edit_task' task.id %}">Edit</a>
+                    <a class="delete-link" href="{% url 'delete_task' task.id %}">Delete</a>
+                </div>
+            </article>
+        {% empty %}
+            <div class="card empty-state">
+                <div class="empty-icon">✦</div>
+                <h3>Your next achievement starts here.</h3>
+                <p>You haven't added any tasks yet. Create one to get started.</p>
+                <a class="button" href="{% url 'add_task' %}">Create your first task</a>
+            </div>
+        {% endfor %}
+    </section>
+</main>
